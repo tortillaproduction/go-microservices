@@ -9,17 +9,17 @@ This repository is a hands-on implementation of microservices architecture based
 This project unifies the 5 separate repositories used in the book (Protocol Buffers, Command Service, Query Service, CQRS Client, and Databse/Docker) into a single monorepo to streamline development and maintenance workflows.
 
 ### Key Tech Stack
-- **Language**: Go 1.26.5
+- **Language**: Go v1.26.5
 - **OS / Environment**: WSL2 (Debian) / VS Code (Remote-WSL)
 - **Architecture**: CQRS (Command Query Responsibility Segregation) / Clean Architecture / Microservices
-- **RPC Framework**: gRPC / Protocol Buffers (`protoc` libprotoc 35.1)
+- **RPC Framework**: gRPC / Protocol Buffers (`protoc` libprotoc v35.1)
 - **Protoc Plugins**:
   - `protoc-gen-go`: v1.36.11
   - `protoc-gen-go-grpc`: v1.6.2
 - **Database**: MySQL (Docker / Docker Compose)
 - **Web Framework**: Gin (CQRS Client)
 - **DI / Application Framework**: Uber `fx`
-- **BDD Testing**: Ginkgo v2 / Gomega
+- **BDD Testing**: Ginkgo v2 (v2.32.0) / Gomega (v1.42.1)
 
 ---
 
