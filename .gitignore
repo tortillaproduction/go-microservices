@@ -1,0 +1,24 @@
+# Binaries for programs and tests
+*.exe
+*.exe-
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Go test
+*.coverprofile
+
+# Architecture specific extensions
+*.a
+*.o
+
+# Environment / IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Docker / App runtime
+tmp/
