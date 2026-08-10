@@ -1,0 +1,71 @@
+// 
+// A proto file defining the Param and Result types for QueryService.
+// 
+
+syntax = "proto3";
+
+import "error.proto";
+import "models.proto";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+package proto.v1;
+
+//*****************************************
+// Definitions of Param and Result types for productCategory search.
+//*****************************************
+message CategoryParam {
+    string id = 1;
+}
+
+message CategoriesResult {
+    repeated Category categories = 1;
+    Error error = 2;
+    google.protobuf.Timestamp timestamp = 3;
+}
+
+message CategoryResult {
+    oneof result {
+        Category category = 1;
+        Error error = 2;
+    }
+    google.protobuf.Timestamp timestamp = 3;
+}
+
+//*****************************************
+// Definitions of Param and Result types for product search.
+//*****************************************
+message ProductParam {
+    string id = 1;
+    string keyword = 2;
+}
+
+message ProductsResult {
+    repeated Product products = 1;
+    Error error = 2;
+    google.protobuf.Timestamp timestamp = 3;
+}
+
+message ProductResult {
+    oneof result {
+        Product product = 1;
+        Error error = 2;
+    }
+    google.protobuf.Timestamp timestamp = 3;
+}
+
+//*****************************************
+// Definitions of productCategories and product QueryService types.
+//*****************************************
+service CategoryQuery {
+    rpc List(google.protobuf.Empty) returns (CategoriesResult);
+    rpc ById(CategoryParam) returns (CategoryResult);
+}
+
+service ProductQuery {
+    rpc ListStream(google.protobuf.Empty) returns (stream Product);
+    rpc List(google.protobuf.Empty) returns (ProductsResult);
+    rpc ById(ProductParam) returns (ProductResult);
+    rpc ByKeyword(ProductParam) returns (ProductsResult);
+}

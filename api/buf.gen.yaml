@@ -1,0 +1,18 @@
+version: v2
+
+managed:
+  enabled: true
+  override:
+    - file_option: go_package
+      value: github.com/tortillaproduction/go-microservices/api/pb/v1;pbv1
+
+plugins:
+  - remote: buf.build/protocolbuffers/go:v1.36.11
+    out: pb/v1
+    opt:
+      - paths=source_relative
+
+  - remote: buf.build/grpc/go:v1.6.2
+    out: pb/v1
+    opt:
+      - paths=source_relative

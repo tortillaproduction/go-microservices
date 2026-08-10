@@ -1,0 +1,63 @@
+// 
+// A proto file defining the Param and Result types for CommandService.
+// 
+
+syntax = "proto3";
+
+import "error.proto";
+import "models.proto";
+
+import "google/protobuf/timestamp.proto";
+
+package proto.v1;
+
+enum CRUD {
+    UNKNOWN = 0;
+    INSERT = 1;
+    UPDATE = 2;
+    DELETE = 3;
+}
+
+//*****************************************
+// Definitions of Param and Result types for productCategory command.
+//*****************************************
+message CategoryUpParam {
+    CRUD crud = 1;
+    string id = 2;
+    string name = 3;
+}
+
+message ProductUpParam {
+    CRUD crud = 1;
+    string id = 2;
+    string name = 3;
+    int32 price = 4;
+    string categoryId = 5;
+}
+
+message CategoryUpResult {
+    Category category = 1;
+    Error error = 2;
+    google.protobuf.Timestamp timestamp = 3;
+}
+
+message ProductUpResult {
+    Product product = 1;
+    Error error = 2;
+    google.protobuf.Timestamp timestamp = 3;
+}
+
+//*****************************************
+// Definition of productCategories and Product CommandService types.
+//*****************************************
+service CategoryCommand {
+    rpc Create(CategoryUpParam) returns (CategoryUpResult);
+    rpc Update(CategoryUpParam) returns (CategoryUpResult);
+    rpc Delete(CategoryUpParam) returns (CategoryUpResult);
+}
+
+service ProductCommand {
+    rpc Create(ProductUpParam) returns (ProductUpResult);
+    rpc Update(ProductUpParam) returns (ProductUpResult);
+    rpc Delete(ProductUpParam) returns (ProductUpResult);
+}

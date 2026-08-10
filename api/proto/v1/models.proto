@@ -1,0 +1,20 @@
+// 
+// A proto file defining the data storage format used between the client and server.
+// 
+
+syntax = "proto3";
+
+package proto.v1;
+
+message Category {
+    string id = 1;
+    string name = 2;
+}
+
+message Product {
+    string id = 1;
+    string name = 2;
+    int32 price = 3;
+    optional Category category = 4;
+}
+
