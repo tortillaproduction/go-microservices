@@ -8,6 +8,9 @@ This repository is a hands-on implementation of microservices architecture based
 
 This project unifies the 5 separate repositories used in the book (Protocol Buffers, Command Service, Query Service, CQRS Client, and Databse/Docker) into a single monorepo to streamline development and maintenance workflows.
 
+### Architecture Diagram
+![CommandService](./docs/images/CommandService.drawio.png)
+
 ### Key Tech Stack
 - **Language**: Go v1.26.5
 - **OS / Environment**: WSL2 (Debian) / VS Code (Remote-WSL)
