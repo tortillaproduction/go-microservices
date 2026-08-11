@@ -1,0 +1,8 @@
+[mysql]
+dbname = "sample_db"
+host = "command_db"
+port = 3306
+user = "root"
+pass = "password"
+sslmode = "false"
+whitelist = ["product", "category"]

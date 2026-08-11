@@ -14,6 +14,7 @@ This project unifies the 5 separate repositories used in the book (Protocol Buff
 
 ![CommandService](./docs/images/CommandService.drawio.png)
 
+
 ### Key Tech Stack
 - **Language**: Go v1.26.5
 - **OS / Environment**: WSL2 (Debian) / VS Code (Remote-WSL)
