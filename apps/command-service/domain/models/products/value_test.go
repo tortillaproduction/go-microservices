@@ -7,7 +7,7 @@ import (
 	"github.com/tortillaproduction/go-microservices/apps/command-service/errs"
 )
 
-var _ = Describe("Value Objects constituting Product entity", Ordered, Label("Creation of the ProductId struct"), func() {
+var _ = Describe("Value Objects constituting Product entity", Ordered, Label("creation of the ProductId struct"), func() {
 	var empty_str *errs.DomainError
 	var length_over *errs.DomainError
 	var not_uuid *errs.DomainError
@@ -23,27 +23,27 @@ var _ = Describe("Value Objects constituting Product entity", Ordered, Label("Cr
 		product_id, _ = NewProductId(id.String())
 	})
 
-	Context("Character count verification", Label("Character count"), func() {
-		It("If the string is empty, errs.DomainError is returned", func() {
+	Context("character count verification", Label("character count"), func() {
+		It("if the string is empty, errs.DomainError is returned", func() {
 			Expect(empty_str).To(Equal(errs.NewDomainError("productID must be 36 characters long")))
 		})
-		It("If the strings longer than 36 characters, errs.DomainError is returned", func() {
+		It("if the strings longer than 36 characters, errs.DomainError is returned", func() {
 			Expect(length_over).To(Equal(errs.NewDomainError("productID must be 36 characters long")))
 		})
 	})
 
 	Context("UUID format verification", Label("UUID format"), func() {
-		It("If the strings format other than UUIDs, errs.DomainError is returned", func() {
+		It("if the strings format other than UUIDs, errs.DomainError is returned", func() {
 			Expect(not_uuid).To(Equal(errs.NewDomainError("productID must be UUID format")))
 		})
-		It("If 36-character UUID strings, ProductId is returned", func() {
+		It("if 36-character UUID strings, ProductId is returned", func() {
 			id, _ := NewProductId(uid)
 			Expect(product_id).To(Equal(id))
 		})
 	})
 })
 
-var _ = Describe("Value Objects constituting Product entity", Ordered, Label("Creation of the ProductName struct"), func() {
+var _ = Describe("Value Objects constituting Product entity", Ordered, Label("creation of the ProductName struct"), func() {
 	var empty_str *errs.DomainError
 	var length_over *errs.DomainError
 	var product_name *ProductName
@@ -54,23 +54,23 @@ var _ = Describe("Value Objects constituting Product entity", Ordered, Label("Cr
 		product_name, _ = NewProductName("water-based ballpoint pen")
 	})
 
-	Context("Character count verification", Label("Invalid character count"), func() {
-		It("If the string is empty, errs.DomainError is returned", func() {
+	Context("character count verification", Label("invalid character count"), func() {
+		It("if the string is empty, errs.DomainError is returned", func() {
 			Expect(empty_str).To(Equal(errs.NewDomainError("productName must be between 5 and 30 characters long")))
 		})
-		It("If the strings longer than 30 characters, errs.DomainError is returned", func() {
+		It("if the strings longer than 30 characters, errs.DomainError is returned", func() {
 			Expect(length_over).To(Equal(errs.NewDomainError("productName must be between 5 and 30 characters long")))
 		})
 	})
 
-	Context("Valid character count verification", Label("Valid character count"), func() {
-		It("If the strings between 5 and 30 characters, ProductName is returned", func() {
+	Context("valid character count verification", Label("valid character count"), func() {
+		It("if the strings between 5 and 30 characters, ProductName is returned", func() {
 			Expect(product_name.Value()).To(Equal("water-based ballpoint pen"))
 		})
 	})
 })
 
-var _ = Describe("Value Objects constituting Product entity", Ordered, Label("Creation of the ProductPrice struct"), func() {
+var _ = Describe("Value Objects constituting Product entity", Ordered, Label("creation of the ProductPrice struct"), func() {
 	var min_err *errs.DomainError
 	var max_err *errs.DomainError
 	var product_price *ProductPrice
@@ -81,17 +81,17 @@ var _ = Describe("Value Objects constituting Product entity", Ordered, Label("Cr
 		product_price, _ = NewProductPrice(1500)
 	})
 
-	Context("Validation of price outside the range", Label("Invalid range"), func() {
-		It("If the price is less than 50, errs.DomainError is returned", func() {
+	Context("validation of price outside the range", Label("invalid range"), func() {
+		It("if the price is less than 50, errs.DomainError is returned", func() {
 			Expect(min_err).To(Equal(errs.NewDomainError("productPrice must be between 50 and 10000")))
 		})
-		It("If the price is more than 10000, errs.DomainError is returned", func() {
+		It("if the price is more than 10000, errs.DomainError is returned", func() {
 			Expect(max_err).To(Equal(errs.NewDomainError("productPrice must be between 50 and 10000")))
 		})
 	})
 
-	Context("Validation of price within the range", Label("Valid range"), func() {
-		It("If the price is between 50 and 10000, ProductPrice is returned", func() {
+	Context("validation of price within the range", Label("valid range"), func() {
+		It("if the price is between 50 and 10000, ProductPrice is returned", func() {
 			Expect(product_price.Value()).To(Equal(uint32(1500)))
 		})
 	})
