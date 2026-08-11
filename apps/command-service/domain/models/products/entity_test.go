@@ -12,7 +12,7 @@ var _ = Describe("Product entity", Ordered, Label("creation of the Product struc
 
 	_ = Describe("Product entity", Ordered, Label("creation of the Product struct"), func() {
 		Context("instance creation", Label("Create Product"), func() {
-			It("instatiating a new Product", Label("NewProduct"), func() {
+			It("instantiating a new Product", Label("NewProduct"), func() {
 				name, _ := NewProductName("chocolate")
 				price, _ := NewProductPrice(150)
 				product, _ := NewProduct(name, price, nil)
@@ -22,7 +22,7 @@ var _ = Describe("Product entity", Ordered, Label("creation of the Product struc
 				Expect(product.Category()).To(BeNil())
 			})
 
-			It("build an instance of Product", Label("BuildProduct"), func() {
+			It("rebuild an instance of Product", Label("BuildProduct"), func() {
 				id, _ := NewProductId("ac413f22-0cf1-490a-9635-7e9ca810e544")
 				name, _ := NewProductName("chocolate")
 				price, _ := NewProductPrice(150)
@@ -48,7 +48,7 @@ var _ = Describe("Product entity", Ordered, Label("verification of Product equiv
 		product, _ = NewProduct(product_name, product_price, category)
 	})
 
-	Context("Verification of error", func() {
+	Context("verification of error", func() {
 		It("comparison target is nil", Label("nil verification"), func() {
 			By("verify that specifying nil returns a DomainError")
 			_, err := product.Equals(nil)
@@ -56,7 +56,7 @@ var _ = Describe("Product entity", Ordered, Label("verification of Product equiv
 		})
 	})
 
-	Context("Verification of comparison results", func() {
+	Context("verification of comparison results", func() {
 		It("differnt ProductId", Label("false verification"), func() {
 			product_name, _ := NewProductName("potato chips")
 			product_price, _ := NewProductPrice(uint32(200))
