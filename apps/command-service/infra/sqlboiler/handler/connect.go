@@ -31,6 +31,12 @@ func tomlRead() (*DBConfig, error) {
 		return nil, err
 	}
 	config := m["mysql"]
+
+	// Override if MYSQL_HOST environment variable is present.
+	if envHost := os.Getenv("MYSQL_HOST"); envHost != "" {
+		config.Host = envHost
+	}
+
 	return &config, nil
 }
 
