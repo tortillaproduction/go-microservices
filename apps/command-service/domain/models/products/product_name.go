@@ -18,7 +18,7 @@ func (ins *ProductName) Value() string {
 
 func NewProductName(value string) (*ProductName, *errs.DomainError) {
 	const MIN_LENGTH int = 5
-	const MAX_LENGTH int = 30
+	const MAX_LENGTH int = 100
 
 	count := utf8.RuneCountInString(value)
 	if count < MIN_LENGTH || count > MAX_LENGTH {

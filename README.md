@@ -23,7 +23,7 @@ This project unifies the 5 separate repositories used in the book (Protocol Buff
 - **Protoc Plugins**:
   - `protoc-gen-go`: v1.36.11
   - `protoc-gen-go-grpc`: v1.6.2
-- **Database**: MySQL (Docker / Docker Compose)
+- **Database**: MySQL v8.0.46 (Docker / Docker Compose)
 - **Web Framework**: Gin (CQRS Client)
 - **DI / Application Framework**: Uber `fx`
 - **BDD Testing**: Ginkgo v2 (v2.32.0) / Gomega (v1.42.1)
@@ -49,6 +49,8 @@ The repository structure consolidates API definitions and service components as 
 ├── go.mod
 └── README.md
 ```
+
+---
 
 ## 🛠️ Database Replication Setup
 Step-by-step instructions for setting up MySQL replication (`command_db` -> `query_db`).
@@ -146,7 +148,6 @@ SHOW SLAVE STATUS\G;
 ```
 > 💡 Verify that `Slave_IO_State: Waiting for source to send event`.
 
----
 
 ### 5. Create Tables, Insert sample Data, and Verify Replication
 
