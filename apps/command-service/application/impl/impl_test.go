@@ -1,4 +1,4 @@
-package repository
+package impl_test
 
 import (
 	"os"
@@ -10,13 +10,13 @@ import (
 	"github.com/tortillaproduction/go-microservices/apps/command-service/infra/sqlboiler/handler"
 )
 
-func TestRepImplPackage(t *testing.T) {
+func TestSrvImplPackage(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "infra/sqlboiler/repository package tests")
+	RunSpecs(t, "application/impl package tests")
 }
 
 var _ = BeforeSuite(func() {
-	absPath, _ := filepath.Abs("../config/database.toml")
+	absPath, _ := filepath.Abs("../../infra/sqlboiler/config/database.toml")
 	os.Setenv("DATABASE_TOML_PATH", absPath)
 	err := handler.DBConnect()
 	Expect(err).NotTo(HaveOccurred(), "aborting tests because DB connection failed")

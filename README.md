@@ -120,7 +120,7 @@ Run the following inside the MySQL CLI (replace placeholders with the actual val
 -- Configure replication settings
 CHANGE MASTER TO
 MASTER_HOST='command_db',
-MASTER_ROOT=3306,
+MASTER_PORT=3306,
 MASTER_USER='repl',
 MASTER_PASSWORD='<REPLICATION_PASSWORD>',
 MASTER_LOG_FILE='<MASTER_LOG_FILE_VALUE>',
