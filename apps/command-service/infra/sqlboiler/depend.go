@@ -7,7 +7,7 @@ import (
 
 var RepDepend = fx.Options(
 	fx.Provide(
-		repository.NewCategoryRepositorySQLBoiler(),
-		repository.NewProductRepositorySQLBoiler(),
+		repository.NewCategoryRepositorySQLBoiler,
+		repository.NewProductRepositorySQLBoiler,
 	),
 )
