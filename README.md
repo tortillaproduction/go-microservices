@@ -53,6 +53,8 @@ The repository structure consolidates API definitions and service components as 
 ---
 
 ## 🛠️ Database Replication Setup
+<details><summary>Click to expand</summary>
+
 Step-by-step instructions for setting up MySQL replication (`command_db` -> `query_db`).
 
 > ⚠️ **Note:** Replace placeholders such as  `<MYSQL_ROOT_PASSWORD>` and `<REPLICATION_PASSWORD>` with your actual credentials.
@@ -164,3 +166,5 @@ docker compose exec command_db mysql -u root -p"<MY_SQL_ROOT_PASSWORD>" sample_d
 
 # 4. Verify data replication on query_db (Replica)
 docker compose exec query_db mysql -u root -p"<MY_SQL_ROOT_PASSWORD>" sample_db -e "SELECT COUNT(*) FROM product;"
+
+</details>
