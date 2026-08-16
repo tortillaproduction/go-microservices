@@ -19,5 +19,5 @@ var _ = BeforeSuite(func() {
 	absPath, _ := filepath.Abs("../../infra/sqlboiler/config/database.toml")
 	os.Setenv("DATABASE_TOML_PATH", absPath)
 	err := handler.DBConnect()
-	Expect(err).NotTo(HaveOccurred(), "aborting tests because DB connection failed")
+	Expect(err).NotTo(HaveOccurred(), "Failed to connect to the database; aborting the test suite.")
 })
