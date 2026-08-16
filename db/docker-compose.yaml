@@ -3,7 +3,7 @@ services:
     container_name: "command_db"
     image: mysql:8.0
     restart: always
-    command: "mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci"
+    command: "mysqld"
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: sample_db
@@ -25,7 +25,7 @@ services:
     container_name: "query_db"
     image: mysql:8.0
     restart: always
-    command: "mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --report-host=command_db"
+    command: "mysqld --report-host=query_db"
     environment:
       MYSQL_ROOT_PASSWORD: password
       TZ: "Asia/Tokyo"
