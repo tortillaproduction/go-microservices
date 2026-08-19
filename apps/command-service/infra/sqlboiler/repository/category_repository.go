@@ -38,12 +38,12 @@ func (rep *categoryRepositorySQLBoiler) Exists(ctx context.Context, tran *sql.Tx
 
 func (rep *categoryRepositorySQLBoiler) Create(ctx context.Context, tran *sql.Tx, category *categories.Category) error {
 	new_category := models.Category{
-		ID:    0,
-		ObjID: category.Id().Value(),
-		Name:  category.Name().Value(),
+		InternalID: 0,
+		ID:         category.Id().Value(),
+		Name:       category.Name().Value(),
 	}
 
-	if err := new_category.Insert(ctx, tran, boil.Whitelist("obj_id", "name")); err != nil {
+	if err := new_category.Insert(ctx, tran, boil.Whitelist("id", "name")); err != nil {
 		return handler.DBErrHandler(err)
 	}
 
@@ -51,7 +51,7 @@ func (rep *categoryRepositorySQLBoiler) Create(ctx context.Context, tran *sql.Tx
 }
 
 func (rep *categoryRepositorySQLBoiler) UpdateById(ctx context.Context, tran *sql.Tx, category *categories.Category) error {
-	up_model, err := models.Categories(qm.Where("obj_id = ?", category.Id().Value())).One(ctx, tran)
+	up_model, err := models.Categories(qm.Where("id = ?", category.Id().Value())).One(ctx, tran)
 	if up_model == nil {
 		return errs.NewCRUDError(fmt.Sprintf("Category ID: %s does not exist and could not be updated", category.Id().Value()))
 	}
@@ -59,10 +59,10 @@ func (rep *categoryRepositorySQLBoiler) UpdateById(ctx context.Context, tran *sq
 		return handler.DBErrHandler(err)
 	}
 
-	up_model.ObjID = category.Id().Value()
+	up_model.ID = category.Id().Value()
 	up_model.Name = category.Name().Value()
 
-	if _, err = up_model.Update(ctx, tran, boil.Whitelist("obj_id", "name")); err != nil {
+	if _, err = up_model.Update(ctx, tran, boil.Whitelist("id", "name")); err != nil {
 		return handler.DBErrHandler(err)
 	}
 
@@ -70,7 +70,7 @@ func (rep *categoryRepositorySQLBoiler) UpdateById(ctx context.Context, tran *sq
 }
 
 func (rep *categoryRepositorySQLBoiler) DeleteById(ctx context.Context, tran *sql.Tx, category *categories.Category) error {
-	del_model, err := models.Categories(qm.Where("obj_id = ?", category.Id().Value())).One(ctx, tran)
+	del_model, err := models.Categories(qm.Where("id = ?", category.Id().Value())).One(ctx, tran)
 	if del_model == nil {
 		return errs.NewCRUDError(fmt.Sprintf("Category ID: %s does not exist and could not be deleted", category.Id().Value()))
 	}
@@ -87,16 +87,16 @@ func (rep *categoryRepositorySQLBoiler) DeleteById(ctx context.Context, tran *sq
 
 // hooks
 func CategoryAfterInsertHook(ctx context.Context, exec boil.ContextExecutor, category *models.Category) error {
-	log.Printf("category ID: %s category Name: %s created.\n", category.ObjID, category.Name)
+	log.Printf("category ID: %s category Name: %s created.\n", category.ID, category.Name)
 	return nil
 }
 
 func CategoryAfterUpdateHook(ctx context.Context, exec boil.ContextExecutor, category *models.Category) error {
-	log.Printf("category ID: %s category Name: %s updated.\n", category.ObjID, category.Name)
+	log.Printf("category ID: %s category Name: %s updated.\n", category.ID, category.Name)
 	return nil
 }
 
 func CategoryAfterDeleteHook(ctx context.Context, exec boil.ContextExecutor, category *models.Category) error {
-	log.Printf("category ID: %s category Name: %s deleted.\n", category.ObjID, category.Name)
+	log.Printf("category ID: %s category Name: %s deleted.\n", category.ID, category.Name)
 	return nil
 }

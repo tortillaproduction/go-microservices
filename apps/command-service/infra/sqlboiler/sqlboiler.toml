@@ -1,0 +1,12 @@
+output = "models"
+pkgname = "models"
+no-tests = true
+wipe = true
+
+[mysql]
+dbname = "sample_db"
+host = "localhost"
+port = 3306
+user = "root"
+pass = "password"
+sslmode = "false"

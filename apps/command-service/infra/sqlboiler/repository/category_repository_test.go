@@ -68,7 +68,7 @@ var _ = Describe("categoryRepositorySQLBoiler", Ordered, Label("unit-test", "cat
 			})
 		})
 
-		Context("when adding a category with a duplicate obj_id", func() {
+		Context("when adding a category with a duplicate id", func() {
 			It("returns a CRUDError for unique constraint violation", func() {
 				id, _ := categories.NewCategoryId("b1524011-b6af-417e-8bf2-f449dd58b5c0")
 				name, _ := categories.NewCategoryName("Stationery")
@@ -81,7 +81,7 @@ var _ = Describe("categoryRepositorySQLBoiler", Ordered, Label("unit-test", "cat
 
 	// Tests for UpdateById() method
 	Describe("UpdateById", Label("UpdateById"), func() {
-		Context("when the specified obj_id does not exist", func() {
+		Context("when the specified id does not exist", func() {
 			It("returns a CRUDError", func() {
 				id, _ := categories.NewCategoryId("b1524011-b6af-417e-8bf2-f449dd58b5c1")
 				name, _ := categories.NewCategoryName("Stationery")
@@ -92,7 +92,7 @@ var _ = Describe("categoryRepositorySQLBoiler", Ordered, Label("unit-test", "cat
 				)))
 			})
 
-			Context("when the specified obj_id exists", func() {
+			Context("when the specified id exists", func() {
 				It("successfully updates the category and returns nil", func() {
 					id, _ := categories.NewCategoryId("b1524011-b6af-417e-8bf2-f449dd58b5c0")
 					name, _ := categories.NewCategoryName("Stationery 1")
@@ -106,7 +106,7 @@ var _ = Describe("categoryRepositorySQLBoiler", Ordered, Label("unit-test", "cat
 
 	// Tests for DeleteById() method
 	Describe("DeleteById", Label("DeleteById"), func() {
-		Context("when the specified obj_id does not exist", func() {
+		Context("when the specified id does not exist", func() {
 			It("returns a CRUDError", func() {
 				id, _ := categories.NewCategoryId("b1524011-b6af-417e-8bf2-f449dd58b5c1")
 				name, _ := categories.NewCategoryName("Stationery 1")
@@ -117,7 +117,7 @@ var _ = Describe("categoryRepositorySQLBoiler", Ordered, Label("unit-test", "cat
 				)))
 			})
 
-			Context("when the specified obj_id exists", func() {
+			Context("when the specified id exists", func() {
 				It("successfully deletes the category and returns nil", func() {
 					name, _ := categories.NewCategoryName("Grocery")
 					category, _ := categories.NewCategory(name)

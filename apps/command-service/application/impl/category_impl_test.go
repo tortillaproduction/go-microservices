@@ -60,20 +60,20 @@ var _ = Describe("categoryServiceImpl", Ordered, Label("unit-test", "category-se
 
 	// Tests for Update() method
 	Describe("Update", Label("Update"), func() {
-		Context("when the specified obj_id exists", func() {
+		Context("when the specified id exists", func() {
 			It("successfully updates the category and returns nil", func() {
 				result := service.Update(ctx, category)
-				log.Println("returns nil when specified obj_id exists:", result)
+				log.Println("returns nil when specified id exists:", result)
 				Expect(result).To(BeNil())
 			})
 		})
 
-		Context("when the specified obj_id does not exist", func() {
+		Context("when the specified id does not exist", func() {
 			It("returns a CRUDError", func() {
 				name, _ := categories.NewCategoryName("Bevarages")
 				upCategory, _ := categories.NewCategory(name)
 				result := service.Update(ctx, upCategory)
-				log.Println("returns CRUDError when specified obj_id does not exist:", result)
+				log.Println("returns CRUDError when specified id does not exist:", result)
 				Expect(result).To(Equal(errs.NewCRUDError(fmt.Sprintf("Category ID: %s does not exist and could not be updated", upCategory.Id().Value()))))
 			})
 		})
@@ -81,14 +81,14 @@ var _ = Describe("categoryServiceImpl", Ordered, Label("unit-test", "category-se
 
 	// Tests for Delete() method
 	Describe("Delete", Label("Delete"), func() {
-		Context("when the specified obj_id exists", func() {
+		Context("when the specified id exists", func() {
 			It("successfully deletes the category and returns nil", func() {
 				result := service.Delete(ctx, category)
 				Expect(result).To(BeNil())
 			})
 		})
 
-		Context("when the specified obj_id does not exist", func() {
+		Context("when the specified id does not exist", func() {
 			It("returns a CRUDError", func() {
 				name, _ := categories.NewCategoryName("Bevarages")
 				delCategory, _ := categories.NewCategory(name)

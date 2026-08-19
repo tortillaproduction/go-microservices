@@ -65,7 +65,7 @@ var _ = Describe("productServiceImpl", Ordered, Label("unit-test", "product-serv
 
 	// Tests for Update() method
 	Describe("Update", Label("Update"), func() {
-		Context("when the specified obj_id exists", func() {
+		Context("when the specified id exists", func() {
 			It("successfully updates the product and returns nil", func() {
 				productName, _ := products.NewProductName("Ballpoint Pen (Black)")
 				productPrice, _ := products.NewProductPrice(uint32(200))
@@ -76,7 +76,7 @@ var _ = Describe("productServiceImpl", Ordered, Label("unit-test", "product-serv
 			})
 		})
 
-		Context("when the specified obj_id does not exist", func() {
+		Context("when the specified id does not exist", func() {
 			It("returns a CRUDError", func() {
 				name, _ := products.NewProductName("Ballpoint Pen (Black)")
 				productPrice, _ := products.NewProductPrice(uint32(200))
@@ -90,14 +90,14 @@ var _ = Describe("productServiceImpl", Ordered, Label("unit-test", "product-serv
 
 	// Tests for Delete() method
 	Describe("Delete", Label("Delete"), func() {
-		Context("when the specified obj_id exists", func() {
+		Context("when the specified id exists", func() {
 			It("successfully deletes the product and returns nil", func() {
 				result := service.Delete(ctx, product)
 				Expect(result).To(BeNil())
 			})
 		})
 
-		Context("when the specified obj_id does not exist", func() {
+		Context("when the specified id does not exist", func() {
 			It("returns a CRUDError", func() {
 				productName, _ := products.NewProductName("Ballpoint Pen (Black)")
 				productPrice, _ := products.NewProductPrice(uint32(200))

@@ -75,7 +75,7 @@ var _ = Describe("productRepositorySQLBoiler", Ordered, Label("unit-test", "prod
 			})
 		})
 
-		Context("when adding a product with a duplicate obj_id", func() {
+		Context("when adding a product with a duplicate id", func() {
 			It("returns a CRUDError for unique constraint violation", func() {
 				productID, _ := products.NewProductId("ac413f22-0cf1-490a-9635-7e9ca810e544")
 				productName, _ := products.NewProductName("Ballpoint Pen")
@@ -89,7 +89,7 @@ var _ = Describe("productRepositorySQLBoiler", Ordered, Label("unit-test", "prod
 
 	// Tests for UpdateById() method
 	Describe("UpdateById", Label("UpdateById"), func() {
-		Context("when the specified obj_id does not exist", func() {
+		Context("when the specified id does not exist", func() {
 			It("returns a CRUDError", func() {
 				productName, _ := products.NewProductName("Ballpoint Pen")
 				productPrice, _ := products.NewProductPrice(uint32(200))
@@ -101,7 +101,7 @@ var _ = Describe("productRepositorySQLBoiler", Ordered, Label("unit-test", "prod
 			})
 		})
 
-		Context("when the specified obj_id exists", func() {
+		Context("when the specified id exists", func() {
 			It("successfully updates the product and returns nil", func() {
 				productID, _ := products.NewProductId("8f81a72a-58ef-422b-b472-d982e8665292")
 				productName, _ := products.NewProductName("Ballpoint Pen")
@@ -115,7 +115,7 @@ var _ = Describe("productRepositorySQLBoiler", Ordered, Label("unit-test", "prod
 
 	// Tests for DeleteById() method
 	Describe("DeleteById", Label("DeleteById"), func() {
-		Context("when the specified obj_id does not exist", func() {
+		Context("when the specified id does not exist", func() {
 			It("returns a CRUDError", func() {
 				productName, _ := products.NewProductName("Ballpoint Pen")
 				productPrice, _ := products.NewProductPrice(uint32(200))
@@ -127,7 +127,7 @@ var _ = Describe("productRepositorySQLBoiler", Ordered, Label("unit-test", "prod
 			})
 		})
 
-		Context("when the specified obj_id exists", func() {
+		Context("when the specified id exists", func() {
 			It("successfully deletes the product and returns nil", func() {
 				productID, _ := products.NewProductId("8f81a72a-58ef-422b-b472-d982e8665292")
 				productName, _ := products.NewProductName("Ballpoint Pen")

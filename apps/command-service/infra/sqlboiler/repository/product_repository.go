@@ -39,14 +39,14 @@ func (rep *productRepositorySQLBoiler) Exists(ctx context.Context, tran *sql.Tx,
 
 func (rep *productRepositorySQLBoiler) Create(ctx context.Context, tran *sql.Tx, product *products.Product) error {
 	new_product := models.Product{
-		ID:         0,
-		ObjID:      product.Id().Value(),
+		InternalID: 0,
+		ID:         product.Id().Value(),
 		Name:       product.Name().Value(),
 		Price:      int(product.Price().Value()),
 		CategoryID: product.Category().Id().Value(),
 	}
 
-	if err := new_product.Insert(ctx, tran, boil.Whitelist("obj_id", "name", "price", "category_id")); err != nil {
+	if err := new_product.Insert(ctx, tran, boil.Whitelist("id", "name", "price", "category_id")); err != nil {
 		return handler.DBErrHandler(err)
 	}
 
@@ -54,7 +54,7 @@ func (rep *productRepositorySQLBoiler) Create(ctx context.Context, tran *sql.Tx,
 }
 
 func (rep *productRepositorySQLBoiler) UpdateById(ctx context.Context, tran *sql.Tx, product *products.Product) error {
-	up_model, err := models.Products(qm.Where("obj_id = ?", product.Id().Value())).One(ctx, tran)
+	up_model, err := models.Products(qm.Where("id = ?", product.Id().Value())).One(ctx, tran)
 	if up_model == nil {
 		return errs.NewCRUDError(fmt.Sprintf("Product ID: %s does not exist and could not be updated", product.Id().Value()))
 	}
@@ -65,7 +65,7 @@ func (rep *productRepositorySQLBoiler) UpdateById(ctx context.Context, tran *sql
 	up_model.Name = product.Name().Value()
 	up_model.Price = int(product.Price().Value())
 
-	if _, err = up_model.Update(ctx, tran, boil.Whitelist("obj_id", "name", "price")); err != nil {
+	if _, err = up_model.Update(ctx, tran, boil.Whitelist("id", "name", "price")); err != nil {
 		return handler.DBErrHandler(err)
 	}
 
@@ -73,7 +73,7 @@ func (rep *productRepositorySQLBoiler) UpdateById(ctx context.Context, tran *sql
 }
 
 func (rep *productRepositorySQLBoiler) DeleteById(ctx context.Context, tran *sql.Tx, product *products.Product) error {
-	del_model, err := models.Products(qm.Where("obj_id = ?", product.Id().Value())).One(ctx, tran)
+	del_model, err := models.Products(qm.Where("id = ?", product.Id().Value())).One(ctx, tran)
 	if del_model == nil {
 		return errs.NewCRUDError(fmt.Sprintf("Product ID: %s does not exist and could not be deleted", product.Id().Value()))
 	}
@@ -90,16 +90,16 @@ func (rep *productRepositorySQLBoiler) DeleteById(ctx context.Context, tran *sql
 
 // hooks
 func ProductAfterInsertHook(ctx context.Context, exec boil.ContextExecutor, product *models.Product) error {
-	log.Printf("product ID: %s product Name: %s price: %d category number: %s created.\n", product.ObjID, product.Name, product.Price, product.CategoryID)
+	log.Printf("product ID: %s product Name: %s price: %d category number: %s created.\n", product.ID, product.Name, product.Price, product.CategoryID)
 	return nil
 }
 
 func ProductAfterUpdateHook(ctx context.Context, exec boil.ContextExecutor, product *models.Product) error {
-	log.Printf("product ID: %s product Name: %s price: %d category number: %s updated.\n", product.ObjID, product.Name, product.Price, product.CategoryID)
+	log.Printf("product ID: %s product Name: %s price: %d category number: %s updated.\n", product.ID, product.Name, product.Price, product.CategoryID)
 	return nil
 }
 
 func ProductAfterDeleteHook(ctx context.Context, exec boil.ContextExecutor, product *models.Product) error {
-	log.Printf("product ID: %s product Name: %s price: %d category number: %s deleted.\n", product.ObjID, product.Name, product.Price, product.CategoryID)
+	log.Printf("product ID: %s product Name: %s price: %d category number: %s deleted.\n", product.ID, product.Name, product.Price, product.CategoryID)
 	return nil
 }

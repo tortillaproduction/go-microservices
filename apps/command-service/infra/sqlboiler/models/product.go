@@ -23,8 +23,8 @@ import (
 
 // Product is an object representing the database table.
 type Product struct {
-	ID         int    `boil:"id" json:"id" toml:"id" yaml:"id"`
-	ObjID      string `boil:"obj_id" json:"obj_id" toml:"obj_id" yaml:"obj_id"`
+	InternalID int    `boil:"internal_id" json:"internal_id" toml:"internal_id" yaml:"internal_id"`
+	ID         string `boil:"id" json:"id" toml:"id" yaml:"id"`
 	Name       string `boil:"name" json:"name" toml:"name" yaml:"name"`
 	Price      int    `boil:"price" json:"price" toml:"price" yaml:"price"`
 	CategoryID string `boil:"category_id" json:"category_id" toml:"category_id" yaml:"category_id"`
@@ -34,28 +34,28 @@ type Product struct {
 }
 
 var ProductColumns = struct {
+	InternalID string
 	ID         string
-	ObjID      string
 	Name       string
 	Price      string
 	CategoryID string
 }{
+	InternalID: "internal_id",
 	ID:         "id",
-	ObjID:      "obj_id",
 	Name:       "name",
 	Price:      "price",
 	CategoryID: "category_id",
 }
 
 var ProductTableColumns = struct {
+	InternalID string
 	ID         string
-	ObjID      string
 	Name       string
 	Price      string
 	CategoryID string
 }{
+	InternalID: "product.internal_id",
 	ID:         "product.id",
-	ObjID:      "product.obj_id",
 	Name:       "product.name",
 	Price:      "product.price",
 	CategoryID: "product.category_id",
@@ -64,14 +64,14 @@ var ProductTableColumns = struct {
 // Generated where
 
 var ProductWhere = struct {
-	ID         whereHelperint
-	ObjID      whereHelperstring
+	InternalID whereHelperint
+	ID         whereHelperstring
 	Name       whereHelperstring
 	Price      whereHelperint
 	CategoryID whereHelperstring
 }{
-	ID:         whereHelperint{field: "`product`.`id`"},
-	ObjID:      whereHelperstring{field: "`product`.`obj_id`"},
+	InternalID: whereHelperint{field: "`product`.`internal_id`"},
+	ID:         whereHelperstring{field: "`product`.`id`"},
 	Name:       whereHelperstring{field: "`product`.`name`"},
 	Price:      whereHelperint{field: "`product`.`price`"},
 	CategoryID: whereHelperstring{field: "`product`.`category_id`"},
@@ -114,10 +114,10 @@ func (r *productR) GetCategory() *Category {
 type productL struct{}
 
 var (
-	productAllColumns            = []string{"id", "obj_id", "name", "price", "category_id"}
-	productColumnsWithoutDefault = []string{"obj_id", "name", "price", "category_id"}
-	productColumnsWithDefault    = []string{"id"}
-	productPrimaryKeyColumns     = []string{"id"}
+	productAllColumns            = []string{"internal_id", "id", "name", "price", "category_id"}
+	productColumnsWithoutDefault = []string{"id", "name", "price", "category_id"}
+	productColumnsWithDefault    = []string{"internal_id"}
+	productPrimaryKeyColumns     = []string{"internal_id"}
 	productGeneratedColumns      = []string{}
 )
 
@@ -429,7 +429,7 @@ func (q productQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (bo
 // Category pointed to by the foreign key.
 func (o *Product) Category(mods ...qm.QueryMod) categoryQuery {
 	queryMods := []qm.QueryMod{
-		qm.Where("`obj_id` = ?", o.CategoryID),
+		qm.Where("`id` = ?", o.CategoryID),
 	}
 
 	queryMods = append(queryMods, mods...)
@@ -496,7 +496,7 @@ func (productL) LoadCategory(ctx context.Context, e boil.ContextExecutor, singul
 
 	query := NewQuery(
 		qm.From(`category`),
-		qm.WhereIn(`category.obj_id in ?`, argsSlice...),
+		qm.WhereIn(`category.id in ?`, argsSlice...),
 	)
 	if mods != nil {
 		mods.Apply(query)
@@ -543,7 +543,7 @@ func (productL) LoadCategory(ctx context.Context, e boil.ContextExecutor, singul
 
 	for _, local := range slice {
 		for _, foreign := range resultSlice {
-			if local.CategoryID == foreign.ObjID {
+			if local.CategoryID == foreign.ID {
 				local.R.Category = foreign
 				if foreign.R == nil {
 					foreign.R = &categoryR{}
@@ -573,7 +573,7 @@ func (o *Product) SetCategory(ctx context.Context, exec boil.ContextExecutor, in
 		strmangle.SetParamNames("`", "`", 0, []string{"category_id"}),
 		strmangle.WhereClause("`", "`", 0, productPrimaryKeyColumns),
 	)
-	values := []any{related.ObjID, o.ID}
+	values := []any{related.ID, o.InternalID}
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -584,7 +584,7 @@ func (o *Product) SetCategory(ctx context.Context, exec boil.ContextExecutor, in
 		return errors.Wrap(err, "failed to update local table")
 	}
 
-	o.CategoryID = related.ObjID
+	o.CategoryID = related.ID
 	if o.R == nil {
 		o.R = &productR{
 			Category: related,
@@ -617,7 +617,7 @@ func Products(mods ...qm.QueryMod) productQuery {
 
 // FindProduct retrieves a single record by ID with an executor.
 // If selectCols is empty Find will return all columns.
-func FindProduct(ctx context.Context, exec boil.ContextExecutor, iD int, selectCols ...string) (*Product, error) {
+func FindProduct(ctx context.Context, exec boil.ContextExecutor, internalID int, selectCols ...string) (*Product, error) {
 	productObj := &Product{}
 
 	sel := "*"
@@ -625,10 +625,10 @@ func FindProduct(ctx context.Context, exec boil.ContextExecutor, iD int, selectC
 		sel = strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, selectCols), ",")
 	}
 	query := fmt.Sprintf(
-		"select %s from `product` where `id`=?", sel,
+		"select %s from `product` where `internal_id`=?", sel,
 	)
 
-	q := queries.Raw(query, iD)
+	q := queries.Raw(query, internalID)
 
 	err := q.Bind(ctx, exec, productObj)
 	if err != nil {
@@ -722,13 +722,13 @@ func (o *Product) Insert(ctx context.Context, exec boil.ContextExecutor, columns
 		return ErrSyncFail
 	}
 
-	o.ID = int(lastID)
-	if lastID != 0 && len(cache.retMapping) == 1 && cache.retMapping[0] == productMapping["id"] {
+	o.InternalID = int(lastID)
+	if lastID != 0 && len(cache.retMapping) == 1 && cache.retMapping[0] == productMapping["internal_id"] {
 		goto CacheNoHooks
 	}
 
 	identifierCols = []any{
-		o.ID,
+		o.InternalID,
 	}
 
 	if boil.IsDebug(ctx) {
@@ -880,8 +880,8 @@ func (o ProductSlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor, 
 }
 
 var mySQLProductUniqueColumns = []string{
+	"internal_id",
 	"id",
-	"obj_id",
 }
 
 // Upsert attempts an insert using an executor, and does an update or ignore on conflict.
@@ -999,8 +999,8 @@ func (o *Product) Upsert(ctx context.Context, exec boil.ContextExecutor, updateC
 		return ErrSyncFail
 	}
 
-	o.ID = int(lastID)
-	if lastID != 0 && len(cache.retMapping) == 1 && cache.retMapping[0] == productMapping["id"] {
+	o.InternalID = int(lastID)
+	if lastID != 0 && len(cache.retMapping) == 1 && cache.retMapping[0] == productMapping["internal_id"] {
 		goto CacheNoHooks
 	}
 
@@ -1042,7 +1042,7 @@ func (o *Product) Delete(ctx context.Context, exec boil.ContextExecutor) (int64,
 	}
 
 	args := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), productPrimaryKeyMapping)
-	sql := "DELETE FROM `product` WHERE `id`=?"
+	sql := "DELETE FROM `product` WHERE `internal_id`=?"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1139,7 +1139,7 @@ func (o ProductSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor) 
 // Reload refetches the object from the database
 // using the primary keys with an executor.
 func (o *Product) Reload(ctx context.Context, exec boil.ContextExecutor) error {
-	ret, err := FindProduct(ctx, exec, o.ID)
+	ret, err := FindProduct(ctx, exec, o.InternalID)
 	if err != nil {
 		return err
 	}
@@ -1178,16 +1178,16 @@ func (o *ProductSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor)
 }
 
 // ProductExists checks if the Product row exists.
-func ProductExists(ctx context.Context, exec boil.ContextExecutor, iD int) (bool, error) {
+func ProductExists(ctx context.Context, exec boil.ContextExecutor, internalID int) (bool, error) {
 	var exists bool
-	sql := "select exists(select 1 from `product` where `id`=? limit 1)"
+	sql := "select exists(select 1 from `product` where `internal_id`=? limit 1)"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
 		fmt.Fprintln(writer, sql)
-		fmt.Fprintln(writer, iD)
+		fmt.Fprintln(writer, internalID)
 	}
-	row := exec.QueryRowContext(ctx, sql, iD)
+	row := exec.QueryRowContext(ctx, sql, internalID)
 
 	err := row.Scan(&exists)
 	if err != nil {
@@ -1199,5 +1199,5 @@ func ProductExists(ctx context.Context, exec boil.ContextExecutor, iD int) (bool
 
 // Exists checks if the Product row exists.
 func (o *Product) Exists(ctx context.Context, exec boil.ContextExecutor) (bool, error) {
-	return ProductExists(ctx, exec, o.ID)
+	return ProductExists(ctx, exec, o.InternalID)
 }

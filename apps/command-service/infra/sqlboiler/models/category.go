@@ -23,32 +23,32 @@ import (
 
 // Category is an object representing the database table.
 type Category struct {
-	ID    int    `boil:"id" json:"id" toml:"id" yaml:"id"`
-	ObjID string `boil:"obj_id" json:"obj_id" toml:"obj_id" yaml:"obj_id"`
-	Name  string `boil:"name" json:"name" toml:"name" yaml:"name"`
+	InternalID int    `boil:"internal_id" json:"internal_id" toml:"internal_id" yaml:"internal_id"`
+	ID         string `boil:"id" json:"id" toml:"id" yaml:"id"`
+	Name       string `boil:"name" json:"name" toml:"name" yaml:"name"`
 
 	R *categoryR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L categoryL  `boil:"-" json:"-" toml:"-" yaml:"-"`
 }
 
 var CategoryColumns = struct {
-	ID    string
-	ObjID string
-	Name  string
+	InternalID string
+	ID         string
+	Name       string
 }{
-	ID:    "id",
-	ObjID: "obj_id",
-	Name:  "name",
+	InternalID: "internal_id",
+	ID:         "id",
+	Name:       "name",
 }
 
 var CategoryTableColumns = struct {
-	ID    string
-	ObjID string
-	Name  string
+	InternalID string
+	ID         string
+	Name       string
 }{
-	ID:    "category.id",
-	ObjID: "category.obj_id",
-	Name:  "category.name",
+	InternalID: "category.internal_id",
+	ID:         "category.id",
+	Name:       "category.name",
 }
 
 // Generated where
@@ -102,13 +102,13 @@ func (w whereHelperstring) NIN(slice []string) qm.QueryMod {
 }
 
 var CategoryWhere = struct {
-	ID    whereHelperint
-	ObjID whereHelperstring
-	Name  whereHelperstring
+	InternalID whereHelperint
+	ID         whereHelperstring
+	Name       whereHelperstring
 }{
-	ID:    whereHelperint{field: "`category`.`id`"},
-	ObjID: whereHelperstring{field: "`category`.`obj_id`"},
-	Name:  whereHelperstring{field: "`category`.`name`"},
+	InternalID: whereHelperint{field: "`category`.`internal_id`"},
+	ID:         whereHelperstring{field: "`category`.`id`"},
+	Name:       whereHelperstring{field: "`category`.`name`"},
 }
 
 // CategoryRels is where relationship names are stored.
@@ -148,10 +148,10 @@ func (r *categoryR) GetProducts() ProductSlice {
 type categoryL struct{}
 
 var (
-	categoryAllColumns            = []string{"id", "obj_id", "name"}
-	categoryColumnsWithoutDefault = []string{"obj_id", "name"}
-	categoryColumnsWithDefault    = []string{"id"}
-	categoryPrimaryKeyColumns     = []string{"id"}
+	categoryAllColumns            = []string{"internal_id", "id", "name"}
+	categoryColumnsWithoutDefault = []string{"id", "name"}
+	categoryColumnsWithDefault    = []string{"internal_id"}
+	categoryPrimaryKeyColumns     = []string{"internal_id"}
 	categoryGeneratedColumns      = []string{}
 )
 
@@ -468,7 +468,7 @@ func (o *Category) Products(mods ...qm.QueryMod) productQuery {
 	}
 
 	queryMods = append(queryMods,
-		qm.Where("`product`.`category_id`=?", o.ObjID),
+		qm.Where("`product`.`category_id`=?", o.ID),
 	)
 
 	return Products(queryMods...)
@@ -507,13 +507,13 @@ func (categoryL) LoadProducts(ctx context.Context, e boil.ContextExecutor, singu
 		if object.R == nil {
 			object.R = &categoryR{}
 		}
-		args[object.ObjID] = struct{}{}
+		args[object.ID] = struct{}{}
 	} else {
 		for _, obj := range slice {
 			if obj.R == nil {
 				obj.R = &categoryR{}
 			}
-			args[obj.ObjID] = struct{}{}
+			args[obj.ID] = struct{}{}
 		}
 	}
 
@@ -573,7 +573,7 @@ func (categoryL) LoadProducts(ctx context.Context, e boil.ContextExecutor, singu
 
 	for _, foreign := range resultSlice {
 		for _, local := range slice {
-			if local.ObjID == foreign.CategoryID {
+			if local.ID == foreign.CategoryID {
 				local.R.Products = append(local.R.Products, foreign)
 				if foreign.R == nil {
 					foreign.R = &productR{}
@@ -595,7 +595,7 @@ func (o *Category) AddProducts(ctx context.Context, exec boil.ContextExecutor, i
 	var err error
 	for _, rel := range related {
 		if insert {
-			rel.CategoryID = o.ObjID
+			rel.CategoryID = o.ID
 			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
 				return errors.Wrap(err, "failed to insert into foreign table")
 			}
@@ -605,7 +605,7 @@ func (o *Category) AddProducts(ctx context.Context, exec boil.ContextExecutor, i
 				strmangle.SetParamNames("`", "`", 0, []string{"category_id"}),
 				strmangle.WhereClause("`", "`", 0, productPrimaryKeyColumns),
 			)
-			values := []any{o.ObjID, rel.ID}
+			values := []any{o.ID, rel.InternalID}
 
 			if boil.IsDebug(ctx) {
 				writer := boil.DebugWriterFrom(ctx)
@@ -616,7 +616,7 @@ func (o *Category) AddProducts(ctx context.Context, exec boil.ContextExecutor, i
 				return errors.Wrap(err, "failed to update foreign table")
 			}
 
-			rel.CategoryID = o.ObjID
+			rel.CategoryID = o.ID
 		}
 	}
 
@@ -653,7 +653,7 @@ func Categories(mods ...qm.QueryMod) categoryQuery {
 
 // FindCategory retrieves a single record by ID with an executor.
 // If selectCols is empty Find will return all columns.
-func FindCategory(ctx context.Context, exec boil.ContextExecutor, iD int, selectCols ...string) (*Category, error) {
+func FindCategory(ctx context.Context, exec boil.ContextExecutor, internalID int, selectCols ...string) (*Category, error) {
 	categoryObj := &Category{}
 
 	sel := "*"
@@ -661,10 +661,10 @@ func FindCategory(ctx context.Context, exec boil.ContextExecutor, iD int, select
 		sel = strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, selectCols), ",")
 	}
 	query := fmt.Sprintf(
-		"select %s from `category` where `id`=?", sel,
+		"select %s from `category` where `internal_id`=?", sel,
 	)
 
-	q := queries.Raw(query, iD)
+	q := queries.Raw(query, internalID)
 
 	err := q.Bind(ctx, exec, categoryObj)
 	if err != nil {
@@ -758,13 +758,13 @@ func (o *Category) Insert(ctx context.Context, exec boil.ContextExecutor, column
 		return ErrSyncFail
 	}
 
-	o.ID = int(lastID)
-	if lastID != 0 && len(cache.retMapping) == 1 && cache.retMapping[0] == categoryMapping["id"] {
+	o.InternalID = int(lastID)
+	if lastID != 0 && len(cache.retMapping) == 1 && cache.retMapping[0] == categoryMapping["internal_id"] {
 		goto CacheNoHooks
 	}
 
 	identifierCols = []any{
-		o.ID,
+		o.InternalID,
 	}
 
 	if boil.IsDebug(ctx) {
@@ -916,8 +916,8 @@ func (o CategorySlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor,
 }
 
 var mySQLCategoryUniqueColumns = []string{
+	"internal_id",
 	"id",
-	"obj_id",
 }
 
 // Upsert attempts an insert using an executor, and does an update or ignore on conflict.
@@ -1035,8 +1035,8 @@ func (o *Category) Upsert(ctx context.Context, exec boil.ContextExecutor, update
 		return ErrSyncFail
 	}
 
-	o.ID = int(lastID)
-	if lastID != 0 && len(cache.retMapping) == 1 && cache.retMapping[0] == categoryMapping["id"] {
+	o.InternalID = int(lastID)
+	if lastID != 0 && len(cache.retMapping) == 1 && cache.retMapping[0] == categoryMapping["internal_id"] {
 		goto CacheNoHooks
 	}
 
@@ -1078,7 +1078,7 @@ func (o *Category) Delete(ctx context.Context, exec boil.ContextExecutor) (int64
 	}
 
 	args := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), categoryPrimaryKeyMapping)
-	sql := "DELETE FROM `category` WHERE `id`=?"
+	sql := "DELETE FROM `category` WHERE `internal_id`=?"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1175,7 +1175,7 @@ func (o CategorySlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor)
 // Reload refetches the object from the database
 // using the primary keys with an executor.
 func (o *Category) Reload(ctx context.Context, exec boil.ContextExecutor) error {
-	ret, err := FindCategory(ctx, exec, o.ID)
+	ret, err := FindCategory(ctx, exec, o.InternalID)
 	if err != nil {
 		return err
 	}
@@ -1214,16 +1214,16 @@ func (o *CategorySlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor
 }
 
 // CategoryExists checks if the Category row exists.
-func CategoryExists(ctx context.Context, exec boil.ContextExecutor, iD int) (bool, error) {
+func CategoryExists(ctx context.Context, exec boil.ContextExecutor, internalID int) (bool, error) {
 	var exists bool
-	sql := "select exists(select 1 from `category` where `id`=? limit 1)"
+	sql := "select exists(select 1 from `category` where `internal_id`=? limit 1)"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
 		fmt.Fprintln(writer, sql)
-		fmt.Fprintln(writer, iD)
+		fmt.Fprintln(writer, internalID)
 	}
-	row := exec.QueryRowContext(ctx, sql, iD)
+	row := exec.QueryRowContext(ctx, sql, internalID)
 
 	err := row.Scan(&exists)
 	if err != nil {
@@ -1235,5 +1235,5 @@ func CategoryExists(ctx context.Context, exec boil.ContextExecutor, iD int) (boo
 
 // Exists checks if the Category row exists.
 func (o *Category) Exists(ctx context.Context, exec boil.ContextExecutor) (bool, error) {
-	return CategoryExists(ctx, exec, o.ID)
+	return CategoryExists(ctx, exec, o.InternalID)
 }
