@@ -14,6 +14,10 @@ This project unifies the 5 separate repositories used in the book (Protocol Buff
 
 ![CommandService](./docs/images/CommandService.drawio.png)
 
+#### 🔹 Query Service
+
+![QueryService](./docs/images/QueryService.drawio.png)
+
 
 ### Key Tech Stack
 - **Language**: Go v1.26.5
@@ -171,5 +175,6 @@ docker compose exec command_db mysql -u root -p"<MY_SQL_ROOT_PASSWORD>" sample_d
 
 # 4. Verify data replication on query_db (Replica)
 docker compose exec query_db mysql -u root -p"<MY_SQL_ROOT_PASSWORD>" sample_db -e "SELECT COUNT(*) FROM product;"
+```
 
 </details>
