@@ -1,0 +1,56 @@
+services:
+  command_db:
+    extends:
+      file: db/docker-compose.yaml
+      service: command_db
+
+  query_db:
+    extends:
+      file: db/docker-compose.yaml
+      service: query_db
+
+  db_admin:
+    extends:
+      file: db/docker-compose.yaml
+      service: db_admin
+    depends_on:
+      - command_db
+      - query_db
+
+  commandservice:
+    container_name: command-service
+    hostname: commandservice
+    build:
+      context: .
+      dockerfile: apps/command-service/Dockerfile
+    tty: true
+    volumes:
+      - .:/go/src
+    ports:
+      - 8082:8082
+    environment:
+      - DATABASE_TOML_PATH=apps/command-service/infra/sqlboiler/config/database.toml
+    networks:
+      - net
+
+  queryservice:
+    container_name: query-service
+    hostname: queryservice
+    build:
+      context: .
+      dockerfile: apps/query-service/Dockerfile
+    tty: true
+    volumes:
+      - .:/go/src
+    ports:
+      - 8083:8083
+    networks:
+      - net
+
+networks:
+  net:
+    name: sampledb_net
+
+volumes:
+  db-command:
+  db-query:
