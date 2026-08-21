@@ -1,0 +1,20 @@
+services:
+  commandservice:
+    container_name: command-service
+    hostname: commandservice
+    build:
+      context: ../..
+      dockerfile: apps/command-service/Dockerfile
+    tty: true
+    volumes:
+      - ../..:/go/src
+    ports:
+      - 8082:8082
+    networks:
+      - external
+    environment:
+      - DATABASE_TOML_PATH=apps/command-service/infra/sqlboiler/config/database.toml
+networks:
+  external:
+    name: sampledb_net
+    external: true

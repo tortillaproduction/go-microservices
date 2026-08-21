@@ -3,6 +3,7 @@ package handler
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"os"
 	"time"
 
@@ -17,6 +18,11 @@ type DBConfig struct {
 	User   string `toml:"user"`
 	Pass   string `toml:"pass"`
 }
+
+const (
+	maxRetries    = 10
+	retryInterval = 3 * time.Second
+)
 
 // tomlRead reads DB settings from `database.toml` and returns DBConfig type.
 func tomlRead() (*DBConfig, error) {
@@ -50,8 +56,28 @@ func DBConnect() error {
 	rdbms := "mysql"
 	connect_str := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", config.User, config.Pass, config.Host, config.Port, config.Dbname)
 
-	conn, err := sql.Open(rdbms, connect_str)
+	var conn *sql.DB
+
+	// Retry connecting ti the DB, since the MySQL container
+	// may not be ready yet when this service starts.
+	for i := 0; i <= maxRetries; i++ {
+		conn, err = sql.Open(rdbms, connect_str)
+		if err == nil {
+			if pingErr := conn.Ping(); pingErr == nil {
+				// Connection established successfully.
+				break
+			} else {
+				err = pingErr
+			}
+		}
+
+		log.Printf("failed to connect db (attempt %d/%d): %v", i, maxRetries, err)
+
+		time.Sleep(retryInterval)
+	}
+
 	if err != nil {
+		// All retries exhausted.
 		return DBErrHandler(err)
 	}
 

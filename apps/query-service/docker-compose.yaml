@@ -1,0 +1,19 @@
+services:
+  queryservice:
+    container_name: query-service
+    hostname: queryservice
+    build:
+      context: ../..
+      dockerfile: apps/query-service/Dockerfile
+    tty: true
+    volumes:
+      - ../..:/go/src
+    ports:
+      - 8083:8083
+    networks:
+      - external
+
+networks:
+  external:
+    name: sampledb_net
+    external: true
