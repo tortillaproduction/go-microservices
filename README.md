@@ -9,6 +9,7 @@ This repository is a hands-on implementation of microservices architecture based
 This project unifies the 5 separate repositories used in the book (Protocol Buffers, Command Service, Query Service, CQRS Client, and Databse/Docker) into a single monorepo to streamline development and maintenance workflows.
 
 ### 📐 Architecture Diagram
+<details><summary>Click to expand</summary>
 
 #### 🔹 Command Service
 
@@ -18,6 +19,7 @@ This project unifies the 5 separate repositories used in the book (Protocol Buff
 
 ![QueryService](./docs/images/QueryService.drawio.png)
 
+</details>
 
 ### Key Tech Stack
 - **Language**: Go v1.26.5
@@ -55,6 +57,7 @@ The repository structure consolidates API definitions and service components as 
 ├── Makefile                   # Protobuf build, DB startup, service run commands
 ├── go.mod
 ├── go.sum
+├── docker-compose.dev.yaml
 └── README.md
 ```
 
